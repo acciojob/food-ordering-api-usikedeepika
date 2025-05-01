@@ -11,33 +11,48 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/food")
 public class FoodController {
-    private Menu menu;
-    private Order currentOrder;
+
+
+    private Menu menu=new Menu();
+
+    private Order currentOrder=new Order();
 
     public FoodController() {
-    	// your code goes here
+
     }
 
     @GetMapping("/menu")
     public List<Food> getMenu() {
-    	// your code goes here
         return menu.getMenuItems();
     }
 
     @PostMapping("/order/{itemId}")
-    public void placeOrder(@PathVariable int itemId) {
-    	// your code goes here
-    }
+    public Order placeOrder(@PathVariable int itemId) {
+        Boolean yes = false;
+        if (menu.getMenuItemById(itemId)) {
 
-    @GetMapping("/order")
-    public Order getCurrentOrder() {
-    	// your code goes here
+            yes = true;
+        }
+        if (yes) {
+            for (Food item : menu.getMenuItems()) {
+                if (item.getId() == itemId) {
+
+                    currentOrder.addItem(menu.getMenuItems().get(itemId));
+
+                }
+            }
+
+        }
         return currentOrder;
     }
 
-    @GetMapping("/order/total")
-    public double getTotalBill() {
-    	// your code goes here
+        @GetMapping("/order")
+        public Order getCurrentOrder() {
+        return currentOrder;
+    }
+
+        @GetMapping("/order/total")
+        public double getTotalBill() {
         return currentOrder.getTotalBill();
     }
 }
